@@ -1,0 +1,239 @@
+@use "bootstrap/scss/bootstrap" as * with (
+  $grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px,
+    xxxl: 1800px
+  ),
+  $container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1320px,
+    xxxl: 1740px
+  )
+);
+
+
+@use "sass:color";
+
+// Импорт шрифтов
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+// Переменные цветов
+$primary-red: #6F1D1B;
+$primary-gold: #BB9457;
+$dark-brown: #432818;
+$light-yellow: #FFE6A7;
+$dark-blue: #2c3e50;
+$popover-bg: $dark-brown;
+
+@mixin label-style($label-bg) {
+    position: absolute;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFE6A7;
+    top: 10px;
+    left: 5px;
+    background-color: $label-bg;
+    padding: 8px;
+    border-radius: 6px;
+    margin: 0;
+}
+
+.navbar {
+    background-color: $primary-gold;
+    border-radius: 12px;
+
+    .navbar-brand span {
+        color: $dark-brown;
+        font-size: 1.25rem;
+    }
+
+    .btn {
+        background-color: $dark-brown;
+        color: $light-yellow;
+
+        &:hover {
+            background-color: color.adjust($dark-brown, $lightness: -10%);
+        }
+    }
+
+    .nav-link {
+        color: $dark-brown;
+
+        &:hover {
+            color: $light-yellow;
+        }
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+    background-color: $primary-red;
+    color: $dark-blue;
+    line-height: 1.6;
+}
+
+.container {
+    h1 {
+        color: $primary-gold;
+    }
+}
+
+.Form {
+    background-color: $primary-gold;
+    padding: 10px;
+
+    .Form-body{
+        color: $dark-brown;
+    }
+
+    h3 {
+        height: 50px;
+    }
+}
+
+.card {
+    background-color: $primary-gold;
+    padding: 10px;
+    cursor: pointer;
+
+    .card-title{
+        color: $dark-brown;
+    }
+
+    .card-text{
+        color: $dark-brown;
+    }
+
+    &:hover {
+        transform: translateY(-10px);
+        transition: transform 0.3s ease;
+    }
+
+    h3 {
+        height: 50px;
+    }
+}
+
+.col:nth-child(3n+1) .badge {
+    @include label-style($primary-gold);
+}
+
+.col:nth-child(3n+2) .badge {
+    @include label-style($dark-brown);
+}
+
+.col:nth-child(3n+3) .badge {
+    @include label-style($dark-blue);
+}
+
+footer {
+    border-top: 3px solid $dark-brown;
+    color: $light-yellow;
+    text-align: center;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 10px 0.75rem;
+    margin-top: 20px;
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: $light-yellow;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .social-link {
+            img {
+                height: 30px;
+                width: 30px;
+                border-radius: 12px;
+            }
+        }
+    }
+}
+
+.modal {
+    .modal-content {
+        background-color: $primary-gold;
+        color: $dark-brown;
+    }
+
+    .modal-header {
+        border-bottom: 2px solid $dark-brown;
+    }
+
+    .modal-footer {
+        border-top: 2px solid $dark-brown;
+    }
+
+    .modal-navigation {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.popover {
+    .popover-body {
+        background-color: $primary-gold;
+        color: $dark-brown;
+    }
+
+    .popover-header {
+        background-color: $dark-brown;
+        border-bottom: 2px solid $dark-brown;
+        color: $primary-gold;
+    }
+
+    .popover-arrow::after {
+        --bs-popover-bg: #{$dark-brown};
+        color: $dark-brown;
+    }
+}
+
+#liveToast {
+    opacity: 0.85;
+
+    .toast-header {
+        background-color: $dark-brown;
+        border-bottom: 2px solid $dark-brown;
+        color: $primary-gold;
+    }
+
+    .toast-body {
+        background-color: $primary-gold;
+        color: $dark-brown;
+    }
+}
+
+#failedLoad {
+    animation: load 1s linear infinite;
+
+    @keyframes load {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
