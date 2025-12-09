@@ -1,126 +1,100 @@
 @extends('layouts.app')
 
-@section('title', $card->title)
+@section('title', $card->title . ' - Детали автомобиля')
 
 @section('content')
-    <div class="Form shadow-lg mx-auto" style="max-width: 900px;">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"
-                data-bs-toggle="popover"
-                data-bs-placement="top"
-                data-bs-trigger="hover focus"
-                data-bs-title="{{'Интересный факт'}}"
-                data-bs-content="{{ $card->fun_fact_content ?? 'Нет дополнительной информации' }}"
-                style="cursor: pointer; color: #432818;">
-                {{ $card->title }}
-            </h4>
-            <span class="badge bg-secondary">{{ $card->category }}</span>
-        </div>
-
-        <div class="Form-body">
-            <div class="row">
-                <div class="col-md-5 mb-3 mb-md-0">
-                    <img src="{{ $card->image_url }}" class="img-fluid rounded-3 shadow" alt="{{ $card->title }}">
-                </div>
-                <div class="col-md-7">
-                    <p class="lead">{{ $card->description }}</p>
-
-                    <hr>
-
-                    @if($card->isMovie())
-                        <div class="details-section">
-                            @if($card->director)
-                                <p><strong>Режиссер:</strong> {{ $card->director }}</p>
-                            @endif
-                            @if($card->release_year)
-                                <p><strong>Год выпуска:</strong> {{ $card->release_year }}</p>
-                            @endif
-                            @if($card->genre)
-                                <p><strong>Жанр:</strong> {{ $card->genre }}</p>
-                            @endif
-                            @if($card->imdb_rating)
-                                <p>
-                                    <strong>Рейтинг
-                                        <span data-bs-toggle="tooltip"
-                                              data-bs-placement="top"
-                                              title="Крупнейшая онлайн-база данных о кино">IMDb</span>:
-                                    </strong>
-                                    {{ $card->imdb_rating_display }}
-                                </p>
-                            @endif
-                        </div>
+    <!-- ДЕТАЛЬНАЯ КАРТОЧКА -->
+    <div class="card shadow-lg">
+        <div class="row g-0">
+            <div class="col-lg-6">
+                <div class="position-relative">
+                    @if($card->image_path && file_exists(public_path($card->image_path)))
+                        <img src="{{ asset($card->image_path) }}" 
+                             class="img-fluid w-100" 
+                             alt="{{ $card->title }}"
+                             style="height: 500px; object-fit: cover;">
                     @else
-                        <div class="details-section">
-                            @if($card->award_category)
-                                <p><strong>Категория:</strong> {{ $card->award_category }}</p>
-                            @endif
-                            @if($card->ceremony_date)
-                                <p><strong>Дата церемонии:</strong> {{ $card->ceremony_date_formatted }}</p>
-                            @endif
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 500px;">
+                            <i class="fas fa-car fa-5x text-muted"></i>
                         </div>
                     @endif
+                    
+                    <!-- БЕЙДЖ -->
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-primary fs-6">
+                        <i class="fas fa-tag me-1"></i>{{ $card->category_name ?? $card->category }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="p-4">
+                    <!-- НАЗВАНИЕ МАШИНЫ -->
+                    <h1 class="display-5 fw-bold mb-2">{{ $card->title }}</h1>
+                    <h3 class="text-muted mb-4">{{ $card->brand }} {{ $card->model }} ({{ $card->year }})</h3>
 
-                    <hr>
-
-                    <div class="additional-details">
-                        {!! nl2br(e($card->details)) !!}
+                    <!-- СПЕЦИФИКАЦИИ -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="text-muted small">Год выпуска</div>
+                                <div class="fw-bold fs-5">{{ $card->year }} г.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="text-muted small">Мощность</div>
+                                <div class="fw-bold fs-5">{{ $card->horsepower }} л.с.</div>
+                            </div>
+                        </div>
+                        @if($card->price)
+                        <div class="col-md-12">
+                            <div class="bg-primary text-white p-3 rounded">
+                                <div class="small">Стоимость</div>
+                                <div class="fw-bold fs-4">{{ $card->formatted_price ?? '$' . number_format($card->price, 0, '.', ' ') }}</div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="card-footer d-flex justify-content-between">
-            <a href="{{ route('cards.index') }}" class="btn btn-secondary">
-                <i class="fa-solid fa-arrow-left me-1"></i> Назад
-            </a>
-            <div class="d-flex gap-2">
-                <a href="{{ route('cards.edit', $card) }}" class="btn btn-primary">
-                    <i class="fa-solid fa-pen me-1"></i> Редактировать
-                </a>
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    <i class="fa-solid fa-trash me-1"></i> Удалить
-                </button>
-            </div>
-        </div>
-    </div>
+                    <!-- ИНТЕРЕСНЫЙ ФАКТ И ОПИСАНИЕ В РАМКЕ -->
+                    <div class="border rounded p-4 mb-4">
+                        <!-- ИНТЕРЕСНЫЙ ФАКТ -->
+                        @if($card->fun_fact_content)
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                <h5 class="mb-0 fw-bold">Интересный факт</h5>
+                            </div>
+                            <p class="mb-0">{{ $card->fun_fact_content }}</p>
+                        </div>
+                        @endif
+                        
+                        <!-- ОПИСАНИЕ -->
+                        @if($card->description)
+                        <div>
+                            <h5 class="mb-2 fw-bold">Описание</h5>
+                            <p class="mb-0">{{ $card->description }}</p>
+                        </div>
+                        @endif
+                    </div>
 
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Подтверждение удаления</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Вы уверены, что хотите удалить "{{ $card->title }}"?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <form action="{{ route('cards.destroy', $card) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                    </form>
+                    <!-- КНОПКИ ДЕЙСТВИЙ -->
+                    <div class="d-flex flex-wrap gap-2 mt-4 pt-4 border-top">
+                        <a href="{{ route('cards.edit', $card) }}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i> Редактировать
+                        </a>
+                        
+                        <!-- ТОЛЬКО УДАЛЕНИЕ - ВОССТАНОВЛЕНИЯ НЕТ -->
+                        <form action="{{ route('cards.destroy', $card) }}" method="POST" class="d-inline" 
+                              data-confirm="Вы уверены, что хотите удалить эту машину навсегда?">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-1"></i> Удалить
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function(el) {
-                return new bootstrap.Tooltip(el);
-            });
-
-            // Инициализация popovers
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            popoverTriggerList.map(function(el) {
-                return new bootstrap.Popover(el);
-            });
-        });
-    </script>
-@endpush

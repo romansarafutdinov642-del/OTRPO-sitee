@@ -11,19 +11,17 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('category'); // Фильмы или Награды
+            $table->string('brand');
+            $table->string('model');
+            $table->integer('year');
+            $table->string('category');
             $table->text('description');
-            $table->text('details');
             $table->string('image_path')->nullable();
-            $table->string('fun_fact_content')->nullable();
-            $table->string('director')->nullable();
-            $table->year('release_year')->nullable();
-            $table->string('genre')->nullable();
-            $table->decimal('imdb_rating', 3, 1)->nullable();
-            $table->date('ceremony_date')->nullable();
-            $table->string('award_category')->nullable();
+            $table->text('fun_fact_content')->nullable();
+            $table->integer('horsepower');
+            $table->decimal('price', 12, 2)->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes(); 
         });
     }
 

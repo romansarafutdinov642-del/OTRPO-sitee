@@ -11,7 +11,7 @@ mix.js('resources/js/app.js', 'public/js')
             require('autoprefixer'),
         ],
     })
-    .copyDirectory('storage/app/public/images', 'public/images')
+
     .sourceMaps()
     .version();
 

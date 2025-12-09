@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     
-    <title>@yield('title', 'Каталог автомобилей')</title>
+    <title><?php echo $__env->yieldContent('title', 'Каталог автомобилей'); ?></title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,13 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Ваш CSS через Laravel Mix -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ route('cards.index') }}">
+            <a class="navbar-brand fw-bold" href="<?php echo e(route('cards.index')); ?>">
                 <i class="fas fa-car me-2"></i>Каталог автомобилей
             </a>
             
@@ -31,30 +31,31 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav">
-                    <a class="nav-link {{ request()->routeIs('cards.index') ? 'active' : '' }}" 
-                       href="{{ route('cards.index') }}">
+                    <a class="nav-link <?php echo e(request()->routeIs('cards.index') ? 'active' : ''); ?>" 
+                       href="<?php echo e(route('cards.index')); ?>">
                         <i class="fas fa-home me-1"></i>Главная
                     </a>
                 </div>
                 
                 <div class="navbar-nav ms-auto">
                     <!-- Кнопка корзины -->
-                    <a href="{{ route('cards.trash') }}" 
+                    <a href="<?php echo e(route('cards.trash')); ?>" 
                        class="btn btn-outline-warning me-3 position-relative">
                         <i class="fas fa-trash me-1"></i>Корзина
-                        @php
+                        <?php
                             $trashCount = App\Models\Card::onlyTrashed()->count();
-                        @endphp
-                        @if($trashCount > 0)
+                        ?>
+                        <?php if($trashCount > 0): ?>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $trashCount }}
+                                <?php echo e($trashCount); ?>
+
                                 <span class="visually-hidden">удалённых записей</span>
                             </span>
-                        @endif
+                        <?php endif; ?>
                     </a>
                     
                     <!-- Кнопка добавления новой машины -->
-                    <a href="{{ route('cards.create') }}" class="btn btn-primary">
+                    <a href="<?php echo e(route('cards.create')); ?>" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Добавить машину
                     </a>
                 </div>
@@ -64,7 +65,7 @@
 
     <!-- Основной контент -->
     <main class="container py-2 flex-grow-1">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Footer -->
@@ -93,7 +94,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Ваш JS через Laravel Mix -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="<?php echo e(asset('js/app.js')); ?>"></script>
     
     <!-- Дополнительные скрипты -->
     <script>
@@ -120,6 +121,6 @@
         });
     </script>
     
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH C:\Users\User\Desktop\lab33\resources\views/layouts/app.blade.php ENDPATH**/ ?>

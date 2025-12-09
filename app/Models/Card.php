@@ -5,86 +5,66 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\Carbon;
 
 class Card extends Model
 {
     use HasFactory, SoftDeletes;
+    
+    const CATEGORIES = [
+        'sedan' => 'Седан',
+        'suv' => 'Внедорожник',
+        'coupe' => 'Купе',
+        'hatchback' => 'Хэтчбек',
+        'convertible' => 'Кабриолет',
+        'wagon' => 'Универсал',
+        'limousine' => 'Лимузин',
+        'sports' => 'Спортивный',
+        'luxury' => 'Люкс',
+        'electric' => 'Электромобиль',
+    ];
 
     protected $fillable = [
         'title',
+        'brand',
+        'model',
+        'year',
         'category',
         'description',
-        'details',
         'image_path',
         'fun_fact_content',
-        'director',
-        'release_year',
-        'genre',
-        'imdb_rating',
-        'ceremony_date',
-        'award_category',
+        'horsepower',
+        'price',
     ];
 
     protected $casts = [
-        'ceremony_date' => 'date',
-        'release_year' => 'integer',
-        'imdb_rating' => 'decimal:1',
+        'year' => 'integer',
+        'horsepower' => 'integer',
+        'price' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
-    protected function title(): Attribute
+    public function getFormattedPriceAttribute()
     {
-        return Attribute::make(
-            get: fn (?string $value) => $value ? mb_ucfirst($value) : null,
-            set: fn (?string $value) => $value ? trim($value) : null,
-        );
+        return number_format($this->price, 2, '.', ' ') . ' ₽';
     }
 
-    protected function ceremonyDateFormatted(): Attribute
+    public function getFullNameAttribute()
     {
-        return Attribute::make(
-            get: fn () => $this->ceremony_date
-                ? $this->ceremony_date->locale('ru')->isoFormat('D MMMM YYYY')
-                : null,
-        );
+        return "{$this->brand} {$this->model} ({$this->year})";
     }
 
-    protected function imdbRatingDisplay(): Attribute
+    public function getImageUrlAttribute()
     {
-        return Attribute::make(
-            get: fn () => $this->imdb_rating
-                ? number_format($this->imdb_rating, 1) . '/10'
-                : null,
-        );
+        if ($this->image_path && file_exists(public_path($this->image_path))) {
+            return asset($this->image_path);
+        }
+        return asset('images/default-car.jpg');
     }
 
-    protected function imageUrl(): Attribute
+    public function getCategoryNameAttribute()
     {
-        return Attribute::make(
-            get: fn () => $this->image_path
-                ? asset('storage/' . $this->image_path)
-                : asset('images/placeholder.jpg'),
-        );
-    }
-
-    public function isMovie(): bool
-    {
-        return $this->category === 'Фильмы';
-    }
-
-    public function isAward(): bool
-    {
-        return $this->category === 'Награды';
-    }
-
-    public function scopeMovies($query)
-    {
-        return $query->where('category', 'Фильмы');
-    }
-
-    public function scopeAwards($query)
-    {
-        return $query->where('category', 'Награды');
+        return self::CATEGORIES[$this->category] ?? $this->category;
     }
 }

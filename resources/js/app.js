@@ -25,14 +25,42 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         }, 5000);
     });
-
-    // Toast уведомления
-    const toastTrigger = document.getElementById('liveToastBtn');
-    const toastLiveExample = document.getElementById('liveToast');
-    if (toastTrigger && toastLiveExample) {
-        const toastBootstrap = Toast.getOrCreateInstance(toastLiveExample);
-        toastTrigger.addEventListener('click', () => {
-            toastBootstrap.show();
+    
+    // Предпросмотр изображения в формах
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+    if (imageInput && imagePreview) {
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('d-none');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
         });
     }
+    
+    // Подтверждение удаления
+    const deleteForms = document.querySelectorAll('form[data-confirm]');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!confirm(this.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Валидация форм Bootstrap
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
 });
